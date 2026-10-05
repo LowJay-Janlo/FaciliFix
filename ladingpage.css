@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+}
+
+header {
+    background-color: #0057AD;
+}
+
+header > a > img {
+    width: 15%;
+    height: auto;
+    margin: 5px;
+}
+
+.divider-field {
+    margin: 20px auto; 
+    padding: 10px; 
+    text-align: center;
+}
+.text-divide {
+    text-align: left;
+    margin-left: 10%
+}
+
+.text-divide h1 > span {
+    color: #0057AD;
+}
+
+main > .divider-field > .divider{
+    background-color: #FBDA0C;
+    border: none;
+    height: 10px;             
+    width: 80%;        
+    margin: 20px auto;
+}
+
+.landing-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr);
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-column {
+    min-width: 0;
+}
+
+.card {
+-webkit-box-shadow: 0px 0px 3px 0px #000000; 
+box-shadow: 0px 0px 3px 0px #000000;
+width: 45%;
+padding: 10px;
+margin: 20px;
+border-top: 20px solid #0057AD;
+}
+
+.container {
+    padding: 30px;
+}
+.card > .container > h2 {
+    text-align: left;
+}
+
+.card > .container > p {
+    color: #333333;
+    width: 100%;
+    margin: 0 auto;
+    text-align: justify;
+}
+
+.card-portrait {
+-webkit-box-shadow: 0px 0px 3px 0px #000000; 
+box-shadow: 0px 0px 3px 0px #000000;
+width: 25%;
+min-height: 400px;
+padding: 10px;
+margin: 20px;
+border-top: 20px solid #0057AD;
+}
+
+.landing-layout > .main-column > .card,
+.landing-layout > .card-portrait {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+}
+
+.slogan-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 24px;
+}
+
+.container-portrait {
+    padding: 30px;
+
+}
+.card-portrait > .container > h2 {
+    text-align: center;
+}
+
+.card-portrait > .container > p, h2 {
+    color: #333333;
+    width: 100%;
+    margin: 0 auto;
+    text-align: justify;
+    padding: 10px 10px;
+}
+
+.login-button {
+    display: block;
+    width: fit-content;
+    margin: 100px auto 0;
+    padding: 10px 20px;
+    background-color: #0057AD;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.login-button:hover,
+.login-button:focus-visible {
+    background-color: #FBDA0C;
+}
+
+@media (max-width: 700px) {
+    .landing-layout {
+        grid-template-columns: 1fr;
+    }
+}

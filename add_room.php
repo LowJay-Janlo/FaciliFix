@@ -8,10 +8,31 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
+// add_room.php          -> add a new room
+// add_room.php?id=5     -> edit room 5
+$edit_id = (int)($_GET['id'] ?? 0);
+$is_edit = $edit_id > 0;
+
 $error     = '';
 $room_name = '';
 $room_tag  = '';
 $room_icon = '';
+
+if ($is_edit && $_SERVER["REQUEST_METHOD"] !== "POST") {
+    $stmt = $conn->prepare("SELECT room_name, room_tag, room_icon FROM rooms WHERE id = ?");
+    $stmt->bind_param("i", $edit_id);
+    $stmt->execute();
+    $existing = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$existing) {
+        header("Location: facilities.php");
+        exit();
+    }
+    $room_name = $existing['room_name'];
+    $room_tag  = (string)$existing['room_tag'];
+    $room_icon = $existing['room_icon'];
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $room_name = trim($_POST['room_name'] ?? '');
@@ -27,9 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!isset($room_icon_options[$room_icon])) {
         $error = "Please choose a room icon.";
     } else {
-        // Block duplicate room names (case-insensitive)
-        $check = $conn->prepare("SELECT id FROM rooms WHERE LOWER(room_name) = LOWER(?)");
-        $check->bind_param("s", $room_name);
+        // Block duplicate room names (case-insensitive), ignoring the room being edited
+        $check = $conn->prepare("SELECT id FROM rooms WHERE LOWER(room_name) = LOWER(?) AND id <> ?");
+        $check->bind_param("si", $room_name, $edit_id);
         $check->execute();
         $check->store_result();
         $exists = $check->num_rows > 0;
@@ -37,6 +58,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($exists) {
             $error = "A room named \"" . $room_name . "\" already exists.";
+        } elseif ($is_edit) {
+            $stmt = $conn->prepare("UPDATE rooms SET room_name = ?, room_tag = ?, room_icon = ? WHERE id = ?");
+            $stmt->bind_param("sssi", $room_name, $room_tag, $room_icon, $edit_id);
+
+            if ($stmt->execute()) {
+                $stmt->close();
+                header("Location: room.php?id=" . $edit_id . "&saved=1");
+                exit();
+            }
+            $error = "Error: " . $conn->error;
+            $stmt->close();
         } else {
             $stmt = $conn->prepare("INSERT INTO rooms (room_name, room_tag, room_icon) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $room_name, $room_tag, $room_icon);
@@ -51,6 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+$back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Room - FaciliFix</title>
+    <title><?php echo $is_edit ? 'Edit Room' : 'Add Room'; ?> - FaciliFix</title>
     <link href="facilities.css" rel="stylesheet">
     <link href="add_room.css" rel="stylesheet">
     <link href="modal.css" rel="stylesheet">
@@ -74,14 +108,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- MAIN SECTION -->
         <main class="addroom-main">
 
-            <a href="facilities.php" class="go-back">
+            <a href="<?php echo $back_url; ?>" class="go-back">
                 <?php echo icon($icons['arrow-left']); ?> Go Back
             </a>
 
             <div class="addroom-header">
                 <span class="eyebrow">Facilities</span>
-                <h1>Add New Room</h1>
-                <p>Give the room a name, put it on a floor and pick an icon. It will show up on the Facilities page right away.</p>
+                <h1><?php echo $is_edit ? 'Edit Room' : 'Add New Room'; ?></h1>
+                <p><?php echo $is_edit
+                    ? 'Change the room name, floor or icon. Its equipment stays exactly as it is.'
+                    : 'Give the room a name, put it on a floor and pick an icon. It will show up on the Facilities page right away.'; ?></p>
             </div>
 
             <div class="addroom-layout">
@@ -131,8 +167,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </fieldset>
 
                     <div class="form-actions">
-                        <a href="facilities.php" class="cancel-button">Cancel</a>
-                        <button type="submit" class="submit-button">Submit</button>
+                        <a href="<?php echo $back_url; ?>" class="cancel-button">Cancel</a>
+                        <button type="submit" class="submit-button"><?php echo $is_edit ? 'Save Changes' : 'Submit'; ?></button>
                     </div>
                 </form>
 

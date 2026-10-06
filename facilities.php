@@ -41,6 +41,12 @@ while ($row = $result->fetch_assoc()) {
                 </div>
             <?php endif; ?>
 
+            <?php if (isset($_GET['deleted'])): ?>
+                <div class="notice notice-success" role="status">
+                    <?php echo icon($icons['check']); ?> Room deleted.
+                </div>
+            <?php endif; ?>
+
             <div class="facilities-head">
                 <h1>Facilities</h1>
                 <a href="admin_dashboard.php" class="go-back">
@@ -74,8 +80,7 @@ while ($row = $result->fetch_assoc()) {
                         $tag_label = $room['room_tag'] ?: 'No tag';
                         $icon_key  = $room_icon_options[$room['room_icon']]['icon'] ?? 'graduation';
                         ?>
-                        <!-- Card link is a placeholder until the room page is built -->
-                        <a href="#" class="room-card"
+                        <a href="room.php?id=<?php echo (int)$room['id']; ?>" class="room-card"
                            data-name="<?php echo htmlspecialchars($room['room_name']); ?>"
                            data-tag="<?php echo htmlspecialchars($room['room_tag'] ?? ''); ?>">
                             <span class="room-icon">

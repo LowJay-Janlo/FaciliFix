@@ -1,0 +1,289 @@
+/* ============================================
+   Room page (equipment table) + equipment form
+   Load AFTER facilities.css
+   ============================================ */
+
+.room-main {
+    width: min(100% - 48px, 1200px);
+    margin: 0 auto;
+    padding: 32px 0 64px;
+}
+
+/* ---------- Room header ---------- */
+.room-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin: 24px 0 20px;
+}
+
+.room-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.room-title-icon .icon {
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.6;
+}
+
+.room-title-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.room-title-text strong {
+    font-size: 1.25rem;
+    overflow-wrap: anywhere;
+}
+
+.room-title-text small {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.room-head .search-box {
+    flex: 1 1 260px;
+    max-width: 380px;
+}
+
+.room-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.room-actions form {
+    margin: 0;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 18px;
+    font: inherit;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.btn-gray {
+    color: var(--ink);
+    background: #e0e0e0;
+    border-color: #999;
+}
+
+.btn-gray:hover,
+.btn-gray:focus-visible {
+    background: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.btn-red {
+    color: #fff;
+    background: #ee2a20;
+    border-color: #ee2a20;
+}
+
+.btn-red:hover,
+.btn-red:focus-visible {
+    background: #c81f17;
+    border-color: #c81f17;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* ---------- Equipment table ---------- */
+.table-wrap {
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.equipment-table {
+    width: 100%;
+    min-width: 860px;
+    border-collapse: collapse;
+}
+
+.equipment-table th {
+    padding: 22px 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.equipment-table td {
+    padding: 14px 12px;
+    text-align: center;
+    font-weight: 600;
+    vertical-align: middle;
+    border-top: 1px solid #e6e6e6;
+    border-left: 1px solid #e6e6e6;
+}
+
+.equipment-table td:first-child {
+    border-left: 0;
+}
+
+.equipment-table tbody tr:hover {
+    background: #f6f9fd;
+}
+
+.equipment-table .col-desc {
+    width: 28%;
+    text-align: left;
+}
+
+.equipment-table td.col-desc {
+    font-weight: 400;
+}
+
+.desc {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.desc-empty {
+    color: #999;
+    font-style: italic;
+}
+
+/* ---------- Status colours ---------- */
+.status {
+    font-weight: 700;
+}
+
+.status-working { color: #1fc152; }
+.status-broken  { color: #ee2a20; }
+.status-missing { color: #8a8a8a; }
+
+/* ---------- Row actions ---------- */
+.row-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 160px;
+    margin: 0 auto;
+}
+
+.row-actions form {
+    margin: 0;
+}
+
+.row-actions .btn {
+    padding: 7px 12px;
+    font-weight: 400;
+}
+
+.table-wrap .empty-message {
+    border-top: 1px solid #e6e6e6;
+}
+
+/* ============================================
+   Equipment form (equipment_form.php)
+   Re-uses the form look from add_room.css
+   ============================================ */
+.addroom-layout.single {
+    grid-template-columns: minmax(0, 640px);
+}
+
+.field textarea {
+    width: 100%;
+    min-height: 130px;
+    padding: 14px 16px;
+    font: inherit;
+    color: var(--ink);
+    background-color: #f7f9fc;
+    border: 2px solid #d5dce8;
+    border-radius: 10px;
+    resize: vertical;
+    transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.field textarea::placeholder {
+    color: #9aa4b5;
+}
+
+.field textarea:hover {
+    border-color: #aebbd0;
+}
+
+.field textarea:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 87, 173, 0.18);
+}
+
+.char-count {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    text-align: right;
+    color: #667;
+}
+
+/* Status picker: three tiles, each in its own colour */
+.icon-options.status-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.status-options .tile {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 8px;
+    text-align: center;
+}
+
+.status-options .status-working .badge { color: #1a9d46; background: #e3f6ea; }
+.status-options .status-broken  .badge { color: #d3231a; background: #fde8e7; }
+.status-options .status-missing .badge { color: #6f6f6f; background: #ececec; }
+
+.status-options .status-working input:checked + .tile { border-color: #1fc152; box-shadow: 0 0 0 4px rgba(31, 193, 82, 0.2); }
+.status-options .status-broken  input:checked + .tile { border-color: #ee2a20; box-shadow: 0 0 0 4px rgba(238, 42, 32, 0.18); }
+.status-options .status-missing input:checked + .tile { border-color: #8a8a8a; box-shadow: 0 0 0 4px rgba(138, 138, 138, 0.22); }
+
+.status-options .status-working input:checked + .tile .badge { color: #fff; background: #1fc152; }
+.status-options .status-broken  input:checked + .tile .badge { color: #fff; background: #ee2a20; }
+.status-options .status-missing input:checked + .tile .badge { color: #fff; background: #8a8a8a; }
+
+.status-options .status-working:hover .tile { border-color: #1fc152; }
+.status-options .status-broken:hover .tile  { border-color: #ee2a20; }
+.status-options .status-missing:hover .tile { border-color: #8a8a8a; }
+
+@media (max-width: 800px) {
+    .room-actions {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .icon-options.status-options {
+        grid-template-columns: 1fr;
+    }
+
+    .status-options .tile {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 12px 16px;
+    }
+}

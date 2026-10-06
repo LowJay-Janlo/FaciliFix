@@ -13,6 +13,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     <meta charset="UTF-8">
     <title>FaciliFix - Admin Dashboard</title>
     <link href="dashboard.css" rel="stylesheet">
+    <link href="modal.css" rel="stylesheet">
 </head>
 <body>
 
@@ -58,5 +59,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
         </section>
     </main>
 
+    <script src="layout.js"></script>
 </body>
 </html>

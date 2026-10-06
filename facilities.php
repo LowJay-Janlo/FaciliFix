@@ -1,41 +1,14 @@
 <?php
 session_start();
 include 'db.php';
+include 'partials.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: login.php");
     exit();
 }
 
-// Floor tags used by the filter buttons (must match the values stored in rooms.room_tag)
-$floor_tags = ['1st Floor', '2nd Floor', '3rd Floor', '4th Floor'];
-
-// Inline SVG icon paths
-$icons = [
-    'menu'       => '<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>',
-    'logout'     => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>',
-    'arrow-left' => '<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
-    'arrow-right'=> '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
-    'search'     => '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
-    'plus'       => '<path d="M5 12h14"/><path d="M12 5v14"/>',
-    'book-open'  => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
-    'book'       => '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
-    'briefcase'  => '<rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-];
-
-function icon($paths) {
-    return '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">' . $paths . '</svg>';
-}
-
-// Pick a card icon based on the room name
-function room_icon_key($name) {
-    $n = strtolower($name);
-    if (strpos($n, 'library') !== false) return 'book-open';
-    if (strpos($n, 'office') !== false || strpos($n, 'registrar') !== false) return 'briefcase';
-    return 'book';
-}
-
-$result = $conn->query("SELECT id, room_name, room_tag FROM rooms ORDER BY id DESC");
+$result = $conn->query("SELECT id, room_name, room_tag, room_icon FROM rooms ORDER BY id DESC");
 $rooms = [];
 while ($row = $result->fetch_assoc()) {
     $rooms[] = $row;
@@ -49,35 +22,24 @@ while ($row = $result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facilities - FaciliFix</title>
     <link href="facilities.css" rel="stylesheet">
+    <link href="modal.css" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Eto Yung SideBar For Quick Naavigation -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-logo">
-            <img src="Assets/Images/logo.png" alt="FaciliFix Logo" draggable="false">
-        </div>
-        <nav class="sidebar-nav" aria-label="Main navigation">
-            <a href="facilities.php" class="active">Facilities</a>
-            <a href="admin_reports.php">New Report</a>
-            <a href="manage_staff.php">Staff Account</a>
-        </nav>
-    </aside>
+    <?php render_sidebar('facilities'); ?>
 
     <div class="content">
 
-        <!-- Hamburger/Logout Sa Nav -->
-        <header class="topbar">
-            <button type="button" class="icon-button" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="true">
-                <?php echo icon($icons['menu']); ?>
-            </button>
-            <a href="logout.php" class="logout-button">
-                <?php echo icon($icons['logout']); ?> Log Out
-            </a>
-        </header>
+        <?php render_topbar(); ?>
 
-        <!-- The main Content -->
+        <!-- MAIN SECTION -->
         <main class="facilities-main">
+
+            <?php if (isset($_GET['added'])): ?>
+                <div class="notice notice-success" role="status">
+                    <?php echo icon($icons['check']); ?> Room added successfully!
+                </div>
+            <?php endif; ?>
 
             <div class="facilities-head">
                 <h1>Facilities</h1>
@@ -108,13 +70,16 @@ while ($row = $result->fetch_assoc()) {
 
                 <section class="room-grid" id="roomGrid" aria-label="Rooms">
                     <?php foreach ($rooms as $room): ?>
-                        <?php $tag_label = $room['room_tag'] ?: 'No tag'; ?>
+                        <?php
+                        $tag_label = $room['room_tag'] ?: 'No tag';
+                        $icon_key  = $room_icon_options[$room['room_icon']]['icon'] ?? 'graduation';
+                        ?>
                         <!-- Card link is a placeholder until the room page is built -->
                         <a href="#" class="room-card"
                            data-name="<?php echo htmlspecialchars($room['room_name']); ?>"
                            data-tag="<?php echo htmlspecialchars($room['room_tag'] ?? ''); ?>">
                             <span class="room-icon">
-                                <?php echo icon($icons[room_icon_key($room['room_name'])]); ?>
+                                <?php echo icon($icons[$icon_key]); ?>
                             </span>
                             <span class="room-info">
                                 <h2><?php echo htmlspecialchars($room['room_name']); ?></h2>
@@ -138,19 +103,10 @@ while ($row = $result->fetch_assoc()) {
         </main>
     </div>
 
+    <script src="layout.js"></script>
     <script>
     (function () {
         const PER_PAGE = 8;
-        const body = document.body;
-
-        // ---------- Sidebar show / hide ----------
-        const toggle = document.getElementById('sidebarToggle');
-        if (window.innerWidth < 800) body.classList.add('sidebar-collapsed');
-
-        toggle.addEventListener('click', function () {
-            const collapsed = body.classList.toggle('sidebar-collapsed');
-            toggle.setAttribute('aria-expanded', String(!collapsed));
-        });
 
         // ---------- Search + tag filter + pagination ----------
         const cards = Array.from(document.querySelectorAll('.room-card'));

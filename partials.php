@@ -1,5 +1,4 @@
 <?php
-// Shared pieces for the admin pages that use the sidebar + top bar layout.
 
 $icons = [
     'menu'       => '<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>',
@@ -18,41 +17,72 @@ $icons = [
     'help-circle'  => '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
 ];
 
-// Floor tags (must match the ENUM values of rooms.room_tag)
 $floor_tags = ['1st Floor', '2nd Floor', '3rd Floor', '4th Floor'];
 
-// Room icon choices (must match the ENUM values of rooms.room_icon)
 $room_icon_options = [
     'office'       => ['label' => 'Office',       'icon' => 'briefcase'],
-    'staff'        => ['label' => 'Staff Room',  'icon' => 'users'],
-    'student'      => ['label' => 'Student Room','icon' => 'graduation'],
-    'computer_lab' => ['label' => 'Computer Lab','icon' => 'monitor'],
+    'staff'        => ['label' => 'Staff Room',   'icon' => 'users'],
+    'student'      => ['label' => 'Student Room', 'icon' => 'graduation'],
+    'computer_lab' => ['label' => 'Computer Lab', 'icon' => 'monitor'],
+];
+
+$admin_nav = [
+    'dashboard'  => ['admin_dashboard.php',  'Dashboard'],
+    'facilities' => ['facilities.php',       'Facilities'],
+    'staff'      => ['manage_staff.php',     'Manage Staff'],
 ];
 
 function icon($paths) {
     return '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">' . $paths . '</svg>';
 }
 
-function render_sidebar($active) {
-    $links = [
-        'facilities'  => ['facilities.php',   'Facilities'],
-        'reports'     => ['admin_reports.php','New Report'],
-        'staff'       => ['manage_staff.php', 'Staff Account'],
-    ];
-    echo '<aside class="sidebar" id="sidebar">';
-    echo '<div class="sidebar-logo"><img src="Assets/Images/logo.png" alt="FaciliFix Logo" draggable="false"></div>';
-    echo '<nav class="sidebar-nav" aria-label="Main navigation">';
-    foreach ($links as $key => $link) {
-        $cls = ($key === $active) ? ' class="active"' : '';
-        echo '<a href="' . $link[0] . '"' . $cls . '>' . $link[1] . '</a>';
+function render_topbar($active = null, $logged_in = true) {
+    global $icons, $admin_nav;
+
+    $home = $logged_in ? 'admin_dashboard.php' : 'landingpage.php';
+
+    echo '<header class="topbar">';
+    echo '<a href="' . $home . '" class="topbar-logo" aria-label="FaciliFix home">';
+    echo '<img src="Assets/Images/logo.png" alt="FaciliFix" draggable="false">';
+    echo '</a>';
+
+    if ($logged_in) {
+        echo '<nav class="topbar-nav" id="topbarNav" aria-label="Main navigation">';
+        foreach ($admin_nav as $key => $link) {
+            $is_active = ($key === $active);
+            echo '<a href="' . $link[0] . '"'
+               . ($is_active ? ' class="active" aria-current="page"' : '') . '>'
+               . htmlspecialchars($link[1]) . '</a>';
+        }
+        echo '</nav>';
+
+        echo '<div class="topbar-actions">';
+        echo '<a href="logout.php" class="logout-button">' . icon($icons['logout']) . '<span class="logout-text">Log Out</span></a>';
+        echo '<button type="button" class="icon-button" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="topbarNav">' . icon($icons['menu']) . '</button>';
+        echo '</div>';
     }
-    echo '</nav></aside>';
+
+    echo '</header>';
 }
 
-function render_topbar() {
+function render_back($url, $label = 'Go back') {
     global $icons;
-    echo '<header class="topbar">';
-    echo '<button type="button" class="icon-button" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="true">' . icon($icons['menu']) . '</button>';
-    echo '<a href="logout.php" class="logout-button">' . icon($icons['logout']) . ' Log Out</a>';
-    echo '</header>';
+    echo '<a href="' . htmlspecialchars($url) . '" class="back-button" aria-label="' . htmlspecialchars($label) . '" title="' . htmlspecialchars($label) . '">'
+       . icon($icons['arrow-left']) . '</a>';
+}
+
+function csrf_token() {
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf'];
+}
+
+function csrf_field() {
+    return '<input type="hidden" name="csrf" value="' . csrf_token() . '">';
+}
+
+function csrf_valid() {
+    return isset($_POST['csrf'], $_SESSION['csrf'])
+        && hash_equals($_SESSION['csrf'], (string)$_POST['csrf']);
 }

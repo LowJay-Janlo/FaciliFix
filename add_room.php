@@ -8,8 +8,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
-// add_room.php          -> add a new room
-// add_room.php?id=5     -> edit room 5
 $edit_id = (int)($_GET['id'] ?? 0);
 $is_edit = $edit_id > 0;
 
@@ -48,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!isset($room_icon_options[$room_icon])) {
         $error = "Please choose a room icon.";
     } else {
-        // Block duplicate room names (case-insensitive), ignoring the room being edited
+
         $check = $conn->prepare("SELECT id FROM rooms WHERE LOWER(room_name) = LOWER(?) AND id <> ?");
         $check->bind_param("si", $room_name, $edit_id);
         $check->execute();
@@ -105,7 +103,6 @@ $back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
 
         <?php render_topbar(); ?>
 
-        <!-- MAIN SECTION -->
         <main class="addroom-main">
 
             <a href="<?php echo $back_url; ?>" class="go-back">
@@ -172,7 +169,6 @@ $back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
                     </div>
                 </form>
 
-                <!-- LIVE PREVIEW -->
                 <aside class="preview" aria-label="Room card preview">
                     <h2>Preview</h2>
                     <p>This is how the room will look on the Facilities page.</p>
@@ -202,7 +198,6 @@ $back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
         const pvTag = document.getElementById('previewTag');
         const pvIcon = document.getElementById('previewIcon');
 
-        // ---------- Live preview ----------
         function updatePreview() {
             pvName.textContent = nameInput.value.trim() || 'Room name';
             pvTag.textContent = tagSelect.value || 'Select a floor';
@@ -222,7 +217,6 @@ $back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
         radios.forEach(function (r) { r.addEventListener('change', updatePreview); });
         updatePreview();
 
-        // ---------- Check the form before it is sent ----------
         form.addEventListener('submit', function (e) {
             if (!form.checkValidity()) {
                 e.preventDefault();

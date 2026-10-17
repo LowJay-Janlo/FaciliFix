@@ -1,11 +1,10 @@
-.login-nav {
-     height: 64px;
-     margin: 0;
-         background-color: #0057AD;
-    }
+/* ============================================
+   Login page
+   Load AFTER base.css
+   ============================================ */
 
 .login-main {
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - var(--topbar-h));
     display: grid;
     place-items: center;
     padding: 24px 16px;
@@ -18,44 +17,77 @@
     align-items: center;
 }
 
-.login-form {
-    width: min(100%, 480px);
-    margin-inline: auto;
-    -webkit-box-shadow: 0px 0px 3px 0px #000000;
-    box-shadow: 0px 0px 3px 0px #000000;
-    padding: 24px;
-}
-
-.LoginLabel {
-    margin: 10px
-}
-
-.login-form-header {
-    margin: 24px
-}
-
 .login-logo {
     display: block;
     width: min(100%, 550px);
-    object-fit: contain;
+    height: auto;
     margin: 0 auto 32px;
+}
+
+.login-form {
+    width: min(100%, 480px);
+    margin-inline: auto;
+    padding: 32px;
+    background: #fff;
+    border-top: 8px solid var(--blue);
+    border-radius: 6px;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.login-form h2 {
+    font-size: 1.8rem;
+}
+
+.login-form .subtitle {
+    margin: 4px 0 24px;
+    color: #555;
+}
+
+.login-form .field {
+    margin-bottom: 20px;
+}
+
+.LoginLabel {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--ink);
+    background: #f7f9fc;
+    border: 2px solid #d5dce8;
+    border-radius: 8px;
+    transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.login-form input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 87, 173, 0.18);
 }
 
 .login-form button {
     display: block;
-    width: fit-content;
-    margin: 100px auto 0;
-    padding: 10px 30px;
-    background-color: #0057AD;
+    width: 100%;
+    margin-top: 28px;
+    padding: 12px 30px;
     color: #fff;
-    font-family: inherit;
-    font-size: 1rem;
+    font: inherit;
     font-weight: 700;
-
+    background: var(--blue);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease;
 }
 
 .login-form button:hover,
 .login-form button:focus-visible {
-    background-color: #FBDA0C;
+    color: var(--ink);
+    background: var(--yellow);
 }
-

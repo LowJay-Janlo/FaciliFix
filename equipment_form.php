@@ -12,7 +12,6 @@ $room_id = (int)($_GET['room_id'] ?? 0);
 $edit_id = (int)($_GET['id'] ?? 0);
 $is_edit = $edit_id > 0;
 
-// The room this equipment belongs to
 $stmt = $conn->prepare("SELECT id, room_name FROM rooms WHERE id = ?");
 $stmt->bind_param("i", $room_id);
 $stmt->execute();
@@ -36,7 +35,6 @@ $status      = '';
 $description = '';
 $old_status  = '';
 
-// Editing: load the existing record
 if ($is_edit) {
     $stmt = $conn->prepare("SELECT equipment_name, status, description FROM equipment WHERE id = ? AND room_id = ?");
     $stmt->bind_param("ii", $edit_id, $room_id);
@@ -62,7 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $status      = $_POST['status'] ?? '';
     $description = trim($_POST['description'] ?? '');
 
-    if ($name === '') {
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } elseif ($name === '') {
         $error = "Equipment name cannot be empty.";
     } elseif (mb_strlen($name) > 150) {
         $error = "Equipment name must be 150 characters or less.";
@@ -80,7 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->close();
 
             if ($ok) {
-                // Keep a history entry in the reports table when the status changed
                 if ($status !== $old_status) {
                     $user_id = (int)$_SESSION['user_id'];
                     $log = $conn->prepare("INSERT INTO reports (equipment_id, user_id, status_reported, remarks) VALUES (?, ?, ?, ?)");
@@ -91,7 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: room.php?id=" . $room_id . "&saved=1");
                 exit();
             }
-            $error = "Error: " . $conn->error;
+            error_log("FaciliFix: " . $conn->error);
+            $error = "Could not save the changes. Please try again.";
         } else {
             $stmt = $conn->prepare("INSERT INTO equipment (room_id, equipment_name, status, description) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("isss", $room_id, $name, $status, $desc_value);
@@ -101,7 +101,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: room.php?id=" . $room_id . "&added=1");
                 exit();
             }
-            $error = "Error: " . $conn->error;
+            error_log("FaciliFix: " . $conn->error);
+            $error = "Could not add the equipment. Please try again.";
             $stmt->close();
         }
     }
@@ -116,36 +117,32 @@ $back_url = "room.php?id=" . $room_id;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $is_edit ? 'Update Report' : 'New Equipment'; ?> - FaciliFix</title>
-    <link href="facilities.css" rel="stylesheet">
+    <link href="base.css" rel="stylesheet">
     <link href="add_room.css" rel="stylesheet">
     <link href="room.css" rel="stylesheet">
     <link href="modal.css" rel="stylesheet">
 </head>
 <body>
 
-    <?php render_sidebar('facilities'); ?>
+    <?php render_topbar('facilities'); ?>
 
-    <div class="content">
-
-        <?php render_topbar(); ?>
-
-        <main class="addroom-main">
-
-            <a href="<?php echo $back_url; ?>" class="go-back">
-                <?php echo icon($icons['arrow-left']); ?> Go Back
-            </a>
+        <main class="page page-narrow">
 
             <div class="addroom-header">
-                <span class="eyebrow"><?php echo htmlspecialchars($room['room_name']); ?></span>
-                <h1><?php echo $is_edit ? 'Update Report' : 'New Equipment'; ?></h1>
-                <p><?php echo $is_edit
-                    ? 'Change the equipment details or update its current condition.'
-                    : 'Add a piece of equipment to this room and describe its condition.'; ?></p>
+                <?php render_back($back_url, 'Back to ' . $room['room_name']); ?>
+                <div>
+                    <span class="eyebrow"><?php echo htmlspecialchars($room['room_name']); ?></span>
+                    <h1><?php echo $is_edit ? 'Update Report' : 'New Equipment'; ?></h1>
+                    <p><?php echo $is_edit
+                        ? 'Change the equipment details or update its current condition.'
+                        : 'Add a piece of equipment to this room and describe its condition.'; ?></p>
+                </div>
             </div>
 
             <div class="addroom-layout single">
 
                 <form method="POST" action="" class="room-form" id="equipmentForm" novalidate>
+                    <?php echo csrf_field(); ?>
 
                     <?php if ($error !== ''): ?>
                         <div class="notice notice-error" role="alert"><?php echo htmlspecialchars($error); ?></div>
@@ -193,7 +190,6 @@ $back_url = "room.php?id=" . $room_id;
             </div>
 
         </main>
-    </div>
 
     <script src="layout.js"></script>
     <script>

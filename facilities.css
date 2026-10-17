@@ -1,192 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100..900&display=swap');
-
-:root {
-    --blue: #0057AD;
-    --blue-dark: #004a94;
-    --blue-darker: #003f7d;
-    --yellow: #FBDA0C;
-    --ink: #202a35;
-    --sidebar-w: 260px;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-[hidden] {
-    display: none !important;
-}
-
-body {
-    font-family: 'Jost', sans-serif;
-    color: var(--ink);
-    background: #fff;
-    min-height: 100vh;
-}
-
-/* ---------- Icons ---------- */
-.icon {
-    width: 1.25em;
-    height: 1.25em;
-    flex-shrink: 0;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* ---------- Sidebar ---------- */
-.sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: var(--sidebar-w);
-    display: flex;
-    flex-direction: column;
-    background: var(--blue);
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.25);
-    z-index: 20;
-    transition: transform 0.25s ease;
-}
-
-.sidebar-logo {
-    padding: 24px 20px 56px;
-}
-
-.sidebar-logo img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.sidebar-nav a {
-    display: block;
-    padding: 22px 16px;
-    text-align: center;
-    color: #fff;
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-decoration: none;
-    background: var(--blue-dark);
-    border-bottom: 3px solid rgba(0, 0, 0, 0.2);
-}
-
-.sidebar-nav a:hover,
-.sidebar-nav a:focus-visible {
-    background: var(--blue-darker);
-}
-
-.sidebar-nav a.active {
-    color: var(--yellow);
-}
-
-/* ---------- Content area (right of the sidebar) ---------- */
-.content {
-    margin-left: var(--sidebar-w);
-    transition: margin-left 0.25s ease;
-}
-
-body.sidebar-collapsed .sidebar {
-    transform: translateX(-100%);
-}
-
-body.sidebar-collapsed .content {
-    margin-left: 0;
-}
-
-/* ---------- Top nav ---------- */
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 80px;
-    padding: 0 32px;
-    background: var(--blue);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.icon-button {
-    display: inline-flex;
-    padding: 8px;
-    color: #fff;
-    background: transparent;
-    border: 0;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.icon-button .icon {
-    width: 28px;
-    height: 28px;
-}
-
-.icon-button:hover,
-.icon-button:focus-visible {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.logout-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    color: #fff;
-    text-decoration: none;
-    background: #dc3545;
-    border-radius: 4px;
-}
-
-.logout-button:hover,
-.logout-button:focus-visible {
-    background: #bb2d3b;
-}
-
-/* ---------- Main section ---------- */
-.facilities-main {
-    width: min(100% - 48px, 1000px);
-    margin: 0 auto;
-    padding: 48px 0 64px;
-}
-
-.facilities-head {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px 48px;
-    margin-bottom: 24px;
-}
-
-.facilities-head h1 {
-    font-size: 2.6rem;
-    font-weight: 700;
-}
-
-.go-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--ink);
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.go-back .icon {
-    width: 1.5em;
-    height: 1.5em;
-}
-
-.go-back:hover,
-.go-back:focus-visible {
-    color: var(--blue);
-}
+/* ============================================
+   Facilities page (room list)
+   Load AFTER base.css
+   ============================================ */
 
 /* ---------- Search + Add Room ---------- */
 .toolbar {
@@ -226,24 +41,6 @@ body.sidebar-collapsed .content {
     pointer-events: none;
 }
 
-.add-room-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    color: var(--ink);
-    text-decoration: none;
-    background: #e0e0e0;
-    border: 1px solid #999;
-    border-radius: 4px;
-}
-
-.add-room-button:hover,
-.add-room-button:focus-visible {
-    background: var(--yellow);
-    border-color: var(--yellow);
-}
-
 /* ---------- Floor tag filters ---------- */
 .tag-filters {
     display: flex;
@@ -258,7 +55,7 @@ body.sidebar-collapsed .content {
     color: var(--ink);
     background: #e0e0e0;
     border: 1px solid #999;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
@@ -299,6 +96,11 @@ body.sidebar-collapsed .content {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
+.room-card:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 2px;
+}
+
 .room-icon .icon {
     width: 48px;
     height: 48px;
@@ -330,7 +132,7 @@ body.sidebar-collapsed .content {
     color: #555;
 }
 
-/* ---------- Pagination ---------- */
+/* ---------- Pagination (also used on the Room page) ---------- */
 .pagination {
     display: flex;
     align-items: center;
@@ -382,42 +184,7 @@ body.sidebar-collapsed .content {
 
 /* ---------- Small screens ---------- */
 @media (max-width: 800px) {
-    .content {
-        margin-left: 0;
-    }
-
-    .topbar {
-        padding: 0 16px;
-    }
-
     .room-grid {
         grid-template-columns: 1fr;
     }
-}
-
-/* ============================================
-   Notices (success message on the Facilities page)
-   ============================================ */
-
-/* ---------- Notices ---------- */
-.notice {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 24px;
-    padding: 12px 16px;
-    border-radius: 6px;
-    border: 1px solid transparent;
-}
-
-.notice-success {
-    color: #0f5132;
-    background: #d1e7dd;
-    border-color: #badbcc;
-}
-
-.notice-error {
-    color: #842029;
-    background: #f8d7da;
-    border-color: #f5c2c7;
 }

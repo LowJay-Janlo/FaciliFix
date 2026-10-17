@@ -21,19 +21,15 @@ while ($row = $result->fetch_assoc()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facilities - FaciliFix</title>
+    <link href="base.css" rel="stylesheet">
     <link href="facilities.css" rel="stylesheet">
     <link href="modal.css" rel="stylesheet">
 </head>
 <body>
 
-    <?php render_sidebar('facilities'); ?>
+    <?php render_topbar('facilities'); ?>
 
-    <div class="content">
-
-        <?php render_topbar(); ?>
-
-        <!-- MAIN SECTION -->
-        <main class="facilities-main">
+        <main class="page">
 
             <?php if (isset($_GET['added'])): ?>
                 <div class="notice notice-success" role="status">
@@ -47,19 +43,18 @@ while ($row = $result->fetch_assoc()) {
                 </div>
             <?php endif; ?>
 
-            <div class="facilities-head">
+            <div class="page-head">
+                <?php render_back('admin_dashboard.php', 'Back to dashboard'); ?>
                 <h1>Facilities</h1>
-                <a href="admin_dashboard.php" class="go-back">
-                    <?php echo icon($icons['arrow-left']); ?> Go Back
-                </a>
             </div>
+            <hr class="page-divider">
 
             <div class="toolbar">
                 <div class="search-box">
                     <input type="text" id="roomSearch" placeholder="Filter rooms by name..." autocomplete="off" aria-label="Search rooms by name">
                     <?php echo icon($icons['search']); ?>
                 </div>
-                <a href="add_room.php" class="add-room-button">
+                <a href="add_room.php" class="btn btn-gray">
                     <?php echo icon($icons['plus']); ?> Add Room
                 </a>
             </div>
@@ -106,14 +101,12 @@ while ($row = $result->fetch_assoc()) {
             <?php endif; ?>
 
         </main>
-    </div>
 
     <script src="layout.js"></script>
     <script>
     (function () {
         const PER_PAGE = 8;
 
-        // ---------- Search + tag filter + pagination ----------
         const cards = Array.from(document.querySelectorAll('.room-card'));
         if (!cards.length) return;
 
@@ -129,7 +122,6 @@ while ($row = $result->fetch_assoc()) {
         function render() {
             const q = state.query.trim().toLowerCase();
 
-            // Search runs across ALL rooms, not just the visible page
             const filtered = cards.filter(function (card) {
                 const nameMatch = !q || card.dataset.name.toLowerCase().includes(q);
                 const tagMatch = !state.tag || card.dataset.tag === state.tag;
@@ -187,8 +179,7 @@ while ($row = $result->fetch_assoc()) {
             state.page = 1;
             render();
         });
-
-        // Click a tag to filter; click it again to clear the filter
+r
         chips.forEach(function (chip) {
             chip.addEventListener('click', function () {
                 state.tag = (state.tag === chip.dataset.tag) ? '' : chip.dataset.tag;

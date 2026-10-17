@@ -5,32 +5,29 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: login.php");
     exit();
 }
+
+include 'partials.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FaciliFix - Admin Dashboard</title>
+    <link href="base.css" rel="stylesheet">
     <link href="dashboard.css" rel="stylesheet">
     <link href="modal.css" rel="stylesheet">
 </head>
 <body>
 
-    <nav>
-        <div class="nav-brand">
-            <img src="Assets/Images/logo.png" alt="FaciliFix Logo" class="logo" draggable="false">
-        </div>
-        <div>
-            <a href="logout.php" class="logout-button">Logout</a>
-        </div>
-    </nav>
+    <?php render_topbar('dashboard'); ?>
 
-    <main class="dashboard-main">
-        <div class="dashboard-heading">
+    <main class="page">
+        <div class="page-head">
             <h1>Admin Dashboard</h1>
-            <hr class="dashboard-divider">
         </div>
+        <hr class="page-divider">
 
         <section class="dashboard-grid" aria-label="Admin management">
             <a class="dashboard-card" href="facilities.php">
@@ -41,13 +38,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
                 </div>
             </a>
 
-            <a class="dashboard-card" href="manage_equipment.php">
-                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="Maintenance professional working on facility equipment" loading="lazy" draggable="false">
-                <div class="dashboard-card-content">
-                    <h2>Manage Equipment</h2>
-                    <p>Submit a report to easily update the current status of any campus equipment as working, broken, or missing.</p>
-                </div>
-            </a>
 
             <a class="dashboard-card" href="manage_staff.php">
                 <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="Staff collaborating around a table" loading="lazy" draggable="false">

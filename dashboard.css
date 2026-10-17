@@ -1,69 +1,12 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #0057AD;
-    color: #fff;
-    padding: 20px 50px;
-}
-
-nav a {
-    color: #fff;
-    text-decoration: none;
-    margin-right: 15px;
-}
-
-.logout-button {
-    display: inline-block;
-    padding: 10px 16px;
-    background-color: #dc3545;
-    color: #fff;
-    border-radius: 4px;
-    margin-right: 0;
-}
-
-.logout-button:hover,
-.logout-button:focus-visible {
-    background-color: #bb2d3b;
-}
-
-.logo {
-    display: block;
-    width: min(220px, 45vw);
-    height: auto;
-}
-
-.dashboard-main {
-    width: min(100% - 48px, 1200px);
-    margin: 0 auto;
-    padding: 40px 0 56px;
-}
-
-.dashboard-heading {
-    margin-bottom: 24px;
-}
-
-.dashboard-heading h1 {
-    color: #202a35;
-    font-size: 1.8rem;
-}
-
-.dashboard-divider {
-    width: 100%;
-    height: 10px;
-    margin: 20px auto;
-    background-color: #fbda0c;
-    border: 0;
-}
+/* ============================================
+   Admin dashboard
+   Load AFTER base.css
+   ============================================ */
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 382px));
+    justify-content: center;
     gap: 24px;
 }
 
@@ -74,7 +17,7 @@ nav a {
     overflow: hidden;
     color: #fff;
     text-decoration: none;
-    background: #0057AD;
+    background: var(--blue);
     border: 1px solid #d7dfe7;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(20, 35, 50, 0.08);
@@ -88,7 +31,7 @@ nav a {
 }
 
 .dashboard-card:focus-visible {
-    outline: 3px solid #fbda0c;
+    outline: 3px solid var(--yellow);
     outline-offset: 3px;
 }
 
@@ -117,11 +60,4 @@ nav a {
     color: #fff;
     line-height: 1.5;
     text-align: justify;
-}
-
-@media (max-width: 600px) {
-    nav {
-        padding: 16px 20px;
-    }
-
 }

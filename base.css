@@ -1,0 +1,371 @@
+/* ============================================
+   FaciliFix base styles - load this FIRST on every page.
+   Holds everything shared: colours, font, icons, the top bar,
+   the back arrow, page layout, buttons and notices.
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100..900&display=swap');
+
+:root {
+    --blue: #0057AD;
+    --blue-dark: #004a94;
+    --blue-darker: #003f7d;
+    --yellow: #FBDA0C;
+    --ink: #202a35;
+    --topbar-h: 80px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    font-family: 'Jost', sans-serif;
+    color: var(--ink);
+    background: #fff;
+    min-height: 100vh;
+}
+
+img {
+    -webkit-user-drag: none;
+}
+
+/* ---------- Icons ---------- */
+.icon {
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ============================================
+   Top bar (same height on every page)
+   ============================================ */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: var(--topbar-h);
+    padding: 0 32px;
+    background: var(--blue);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.topbar-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.topbar-logo img {
+    display: block;
+    height: 52px;
+    width: auto;
+}
+
+.topbar-nav {
+    display: flex;
+    align-items: stretch;
+    align-self: stretch;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.topbar-nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 18px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a:focus-visible {
+    background: var(--blue-dark);
+}
+
+.topbar-nav a.active {
+    color: var(--yellow);
+}
+
+/* Yellow bar under the current page */
+.topbar-nav a.active::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+    height: 4px;
+    background: var(--yellow);
+    border-radius: 4px 4px 0 0;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.logout-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    background: #dc3545;
+    border-radius: 6px;
+}
+
+.logout-button:hover,
+.logout-button:focus-visible {
+    background: #bb2d3b;
+}
+
+/* Menu button: only shown on small screens */
+.icon-button {
+    display: none;
+    padding: 8px;
+    color: #fff;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.icon-button .icon {
+    width: 28px;
+    height: 28px;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   Page layout
+   ============================================ */
+.page {
+    width: min(100% - 48px, 1200px);
+    margin: 0 auto;
+    padding: 40px 0 64px;
+}
+
+.page-narrow {
+    width: min(100% - 48px, 1000px);
+}
+
+/* Row with the back arrow on the left and the page title next to it */
+.page-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-head h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.page-divider {
+    width: 100%;
+    height: 10px;
+    margin: 0 0 28px;
+    background: var(--yellow);
+    border: 0;
+}
+
+/* ---------- Back arrow (icon only) ---------- */
+.back-button {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    color: var(--blue);
+    background: #fff;
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.back-button .icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2.4;
+}
+
+.back-button:hover,
+.back-button:focus-visible {
+    color: var(--yellow);
+    background: var(--blue);
+    transform: translateX(-2px);
+}
+
+.back-button:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Buttons (used by Facilities, Room and forms)
+   ============================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 18px;
+    font: inherit;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.btn-gray {
+    color: var(--ink);
+    background: #e0e0e0;
+    border-color: #999;
+}
+
+.btn-gray:hover,
+.btn-gray:focus-visible {
+    background: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.btn-red {
+    color: #fff;
+    background: #ee2a20;
+    border-color: #ee2a20;
+}
+
+.btn-red:hover,
+.btn-red:focus-visible {
+    background: #c81f17;
+    border-color: #c81f17;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* ============================================
+   Notices (success / error messages)
+   ============================================ */
+.notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+.notice-success {
+    color: #0f5132;
+    background: #d1e7dd;
+    border-color: #badbcc;
+}
+
+.notice-error {
+    color: #842029;
+    background: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+/* ============================================
+   Small screens: nav collapses into a drop-down panel
+   ============================================ */
+@media (max-width: 860px) {
+    .topbar {
+        gap: 12px;
+        padding: 0 16px;
+    }
+
+    .icon-button {
+        display: inline-flex;
+        order: 3;
+    }
+
+    .topbar-actions {
+        order: 2;
+    }
+
+    .topbar-nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        display: none;
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+        background: var(--blue-dark);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .topbar-nav.open {
+        display: flex;
+    }
+
+    .topbar-nav a {
+        padding: 16px 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .topbar-nav a.active::after {
+        left: 0;
+        right: auto;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        height: auto;
+        border-radius: 0;
+    }
+
+    .page-head h1 {
+        font-size: 1.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar-logo img {
+        height: 44px;
+    }
+
+    .logout-button .logout-text {
+        display: none;
+    }
+
+    .logout-button {
+        padding: 10px;
+    }
+}

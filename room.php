@@ -49,24 +49,16 @@ foreach ($notices as $key => $text) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($room['room_name']); ?> - FaciliFix</title>
+    <link href="base.css" rel="stylesheet">
     <link href="facilities.css" rel="stylesheet">
     <link href="room.css" rel="stylesheet">
     <link href="modal.css" rel="stylesheet">
 </head>
 <body>
 
-    <?php render_sidebar('facilities'); ?>
+    <?php render_topbar('facilities'); ?>
 
-    <div class="content">
-
-        <?php render_topbar(); ?>
-
-        <!-- MAIN SECTION -->
-        <main class="room-main">
-
-            <a href="facilities.php" class="go-back">
-                <?php echo icon($icons['arrow-left']); ?> Go Back
-            </a>
+        <main class="page">
 
             <?php if ($notice !== ''): ?>
                 <div class="notice notice-success" role="status">
@@ -74,8 +66,9 @@ foreach ($notices as $key => $text) {
                 </div>
             <?php endif; ?>
 
-            <!-- Room header + actions -->
             <div class="room-head">
+                <?php render_back('facilities.php', 'Back to facilities'); ?>
+
                 <div class="room-title">
                     <span class="room-title-icon"><?php echo icon($icons[$icon_key]); ?></span>
                     <span class="room-title-text">
@@ -95,6 +88,7 @@ foreach ($notices as $key => $text) {
                     </a>
 
                     <form method="POST" action="delete_room.php">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="id" value="<?php echo $room_id; ?>">
                         <button type="submit" class="btn btn-red"
                                 data-confirm-title="Delete this room?"
@@ -122,7 +116,7 @@ foreach ($notices as $key => $text) {
                     <tbody id="equipmentBody">
                         <?php foreach ($equipment as $item): ?>
                             <?php
-                            $status_class = strtolower($item['status']);
+                            $status_class = htmlspecialchars(strtolower($item['status']));
                             $reported = $item['updated_at'] ?: $item['created_at'];
                             $search_text = strtolower($item['id'] . ' ' . $item['equipment_name'] . ' ' . $item['status'] . ' ' . ($item['description'] ?? ''));
                             ?>
@@ -142,6 +136,7 @@ foreach ($notices as $key => $text) {
                                     <div class="row-actions">
                                         <a href="equipment_form.php?room_id=<?php echo $room_id; ?>&amp;id=<?php echo (int)$item['id']; ?>" class="btn btn-gray btn-block">Update Report</a>
                                         <form method="POST" action="delete_equipment.php">
+                                            <?php echo csrf_field(); ?>
                                             <input type="hidden" name="id" value="<?php echo (int)$item['id']; ?>">
                                             <input type="hidden" name="room_id" value="<?php echo $room_id; ?>">
                                             <button type="submit" class="btn btn-red btn-block"
@@ -165,7 +160,6 @@ foreach ($notices as $key => $text) {
             <nav class="pagination" id="pagination" aria-label="Equipment pages" hidden></nav>
 
         </main>
-    </div>
 
     <script src="layout.js"></script>
     <script>
@@ -186,7 +180,6 @@ foreach ($notices as $key => $text) {
         function render() {
             const q = state.query.trim().toLowerCase();
 
-            // Filter runs across ALL equipment, not just the visible page
             const filtered = rows.filter(function (row) {
                 return !q || row.dataset.search.includes(q);
             });

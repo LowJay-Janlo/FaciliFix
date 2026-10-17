@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db.php';
+include 'partials.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: login.php");
@@ -9,8 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
 
 $room_id = (int)($_POST['room_id'] ?? 0);
 
-// Only accept POST so a link or page refresh can never delete equipment
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && csrf_valid()) {
     $equipment_id = (int)($_POST['id'] ?? 0);
 
     if ($equipment_id > 0 && $room_id > 0) {

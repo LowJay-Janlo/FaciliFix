@@ -1,0 +1,1068 @@
+/* ============================================================
+   Dashboard
+   ============================================================ */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 382px));
+    justify-content: center;
+    gap: 24px;
+}
+
+.dashboard-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    background: var(--blue);
+    border: 1px solid #d7dfe7;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(20, 35, 50, 0.08);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.dashboard-card:hover,
+.dashboard-card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(20, 35, 50, 0.16);
+}
+
+.dashboard-card:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 3px;
+}
+
+.dashboard-card img {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 16px;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    background: #e8edf2;
+    border-radius: 2px;
+}
+
+.dashboard-card-content {
+    padding: 40px;
+}
+
+.dashboard-card h2 {
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.dashboard-card p {
+    color: #fff;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+/* ============================================================
+   Facilities and staff list
+   ============================================================ */
+
+/* ---------- Search + Add Room ---------- */
+.toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin-bottom: 16px;
+}
+
+.search-box {
+    position: relative;
+    flex: 1 1 320px;
+    max-width: 600px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 46px 12px 18px;
+    font: inherit;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.search-box input:focus {
+    outline: 2px solid var(--blue);
+    border-color: var(--blue);
+}
+
+.search-box .icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    color: #555;
+    pointer-events: none;
+}
+
+/* ---------- Floor tag filters ---------- */
+.tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.tag-chip {
+    padding: 8px 14px;
+    font: inherit;
+    color: var(--ink);
+    background: #e0e0e0;
+    border: 1px solid #999;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.tag-chip:hover {
+    background: #d0d0d0;
+}
+
+.tag-chip[aria-pressed="true"] {
+    color: var(--yellow);
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+/* ---------- Room cards ---------- */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.room-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+    padding: 18px 20px;
+    color: var(--ink);
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.room-card:hover,
+.room-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.room-card:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 2px;
+}
+
+.room-icon .icon {
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.6;
+}
+
+.room-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.room-info h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.room-info p {
+    color: #444;
+}
+
+.room-arrow {
+    align-self: flex-start;
+}
+
+.empty-message {
+    padding: 32px 0;
+    text-align: center;
+    color: #555;
+}
+
+/* ---------- Pagination (also used on the Room page) ---------- */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 40px;
+}
+
+.page-button {
+    min-width: 44px;
+    height: 44px;
+    font: inherit;
+    font-weight: 700;
+    color: var(--ink);
+    background: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.page-button:hover {
+    background: #f0f0f0;
+}
+
+.page-button.active {
+    color: var(--yellow);
+    background: var(--blue);
+}
+
+.page-arrow {
+    display: inline-flex;
+    padding: 6px;
+    color: #333;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.page-arrow .icon {
+    width: 28px;
+    height: 28px;
+}
+
+.page-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 800px) {
+    .room-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   Forms (add room, equipment, staff)
+   ============================================================ */
+
+/* ---------- Page header (back arrow on the left, title next to it) ---------- */
+.addroom-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 0 0 32px;
+}
+
+.addroom-header .eyebrow {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: #e6f0fb;
+    border-radius: 999px;
+}
+
+.addroom-header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.addroom-header p {
+    margin-top: 6px;
+    color: #555;
+}
+
+/* ---------- Two column layout: form + live preview ---------- */
+.addroom-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ---------- Form card ---------- */
+.room-form {
+    padding: 36px 40px 40px;
+    background: #fff;
+    border: 1px solid #e3e7ee;
+    border-top: 8px solid var(--blue);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 40, 90, 0.12);
+}
+
+.field {
+    margin: 0 0 28px;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.field > label,
+.field > legend {
+    display: block;
+    margin-bottom: 4px;
+    padding: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.field .hint {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #667;
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="password"],
+.field select {
+    width: 100%;
+    padding: 14px 16px;
+    font: inherit;
+    color: var(--ink);
+    background-color: #f7f9fc;
+    border: 2px solid #d5dce8;
+    border-radius: 10px;
+    transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.field input[type="text"]::placeholder,
+.field input[type="email"]::placeholder,
+.field input[type="password"]::placeholder {
+    color: #9aa4b5;
+}
+
+.field input[type="text"]:hover,
+.field input[type="email"]:hover,
+.field input[type="password"]:hover,
+.field select:hover {
+    border-color: #aebbd0;
+}
+
+.field input[type="text"]:focus,
+.field input[type="email"]:focus,
+.field input[type="password"]:focus,
+.field select:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 87, 173, 0.18);
+}
+
+/* Custom dropdown arrow */
+.field select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 48px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230057AD' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 20px;
+}
+
+/* ---------- Icon picker tiles (2 x 2) ---------- */
+.icon-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.icon-option {
+    position: relative;
+    display: block;
+    margin: 0;
+    cursor: pointer;
+}
+
+.icon-option input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.icon-option .tile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 100%;
+    padding: 16px 18px;
+    font-weight: 600;
+    background: #f7f9fc;
+    border: 2px solid #d5dce8;
+    border-radius: 12px;
+    transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.icon-option .tile .badge {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    color: var(--blue);
+    background: #e6f0fb;
+    border-radius: 50%;
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.icon-option .tile .badge .icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.8;
+}
+
+.icon-option:hover .tile {
+    border-color: var(--blue);
+    transform: translateY(-2px);
+}
+
+.icon-option input:checked + .tile {
+    background: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 87, 173, 0.18);
+}
+
+.icon-option input:checked + .tile .badge {
+    color: var(--yellow);
+    background: var(--blue);
+}
+
+.icon-option input:focus-visible + .tile {
+    outline: 3px solid var(--yellow);
+    outline-offset: 3px;
+}
+
+/* ---------- Buttons ---------- */
+.form-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.submit-button,
+.cancel-button {
+    flex: 1;
+    padding: 14px 24px;
+    font: inherit;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+
+.submit-button {
+    color: #fff;
+    background: #2fb858;
+    border: 2px solid #2fb858;
+    box-shadow: 0 4px 10px rgba(47, 184, 88, 0.35);
+}
+
+.submit-button:hover,
+.submit-button:focus-visible {
+    background: #279a49;
+    border-color: #279a49;
+    transform: translateY(-1px);
+}
+
+.cancel-button {
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid #c5cedc;
+}
+
+.cancel-button:hover,
+.cancel-button:focus-visible {
+    background: #f0f3f8;
+}
+
+/* ---------- Live preview ---------- */
+.preview {
+    position: sticky;
+    top: 104px;
+    padding: 24px;
+    background: #f1f5fb;
+    border: 2px dashed #b9c8de;
+    border-radius: 12px;
+}
+
+.preview h2 {
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+}
+
+.preview > p {
+    margin-bottom: 18px;
+    font-size: 0.9rem;
+    color: #667;
+}
+
+.preview-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.preview-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    color: var(--ink);
+    border: 2px dashed #c5cedc;
+    border-radius: 8px;
+}
+
+.preview-icon .icon {
+    width: 36px;
+    height: 36px;
+    stroke-width: 1.6;
+}
+
+.preview-icon.filled {
+    border-color: transparent;
+}
+
+.preview-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.preview-text strong {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.preview-text span {
+    color: #444;
+}
+
+.preview-card > .icon {
+    align-self: flex-start;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 900px) {
+    .addroom-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .preview {
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 560px) {
+    .room-form {
+        padding: 24px 20px 28px;
+    }
+
+    .icon-options {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .addroom-header h1 {
+        font-size: 1.9rem;
+    }
+}
+
+/* ============================================================
+   Room equipment table
+   ============================================================ */
+
+/* ---------- Room header (back arrow, room name, search, actions) ---------- */
+.room-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin: 0 0 24px;
+}
+
+.room-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.room-title-icon .icon {
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.6;
+}
+
+.room-title-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.room-title-text strong {
+    font-size: 1.25rem;
+    overflow-wrap: anywhere;
+}
+
+.room-title-text small {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.room-head .search-box {
+    flex: 1 1 260px;
+    max-width: 380px;
+}
+
+.room-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.room-actions form {
+    margin: 0;
+}
+
+/* ---------- Equipment table ---------- */
+.table-wrap {
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.equipment-table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+}
+
+.equipment-table th {
+    padding: 22px 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.equipment-table td {
+    padding: 14px 12px;
+    text-align: center;
+    font-weight: 600;
+    vertical-align: middle;
+    border-top: 1px solid #e6e6e6;
+    border-left: 1px solid #e6e6e6;
+}
+
+.equipment-table td:first-child {
+    border-left: 0;
+}
+
+.equipment-table tbody tr:hover {
+    background: #f6f9fd;
+}
+
+.equipment-table .col-desc {
+    width: 28%;
+    text-align: left;
+}
+
+.equipment-table td.col-desc {
+    font-weight: 400;
+}
+
+.desc {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.desc-empty {
+    color: #999;
+    font-style: italic;
+}
+
+/* ---------- Status colours ---------- */
+.status {
+    font-weight: 700;
+}
+
+.status-working { color: #1fc152; }
+.status-broken  { color: #ee2a20; }
+.status-missing { color: #8a8a8a; }
+
+/* ---------- Row actions ---------- */
+.row-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 160px;
+    margin: 0 auto;
+}
+
+.row-actions form {
+    margin: 0;
+}
+
+.row-actions .btn {
+    padding: 7px 12px;
+    font-weight: 400;
+}
+
+.table-wrap .empty-message {
+    border-top: 1px solid #e6e6e6;
+}
+
+/* ============================================
+   Equipment form (equipment_form.php)
+   Re-uses the form look from add_room.css
+   ============================================ */
+.addroom-layout.single {
+    grid-template-columns: minmax(0, 640px);
+}
+
+.field textarea {
+    width: 100%;
+    min-height: 130px;
+    padding: 14px 16px;
+    font: inherit;
+    color: var(--ink);
+    background-color: #f7f9fc;
+    border: 2px solid #d5dce8;
+    border-radius: 10px;
+    resize: vertical;
+    transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.field textarea::placeholder {
+    color: #9aa4b5;
+}
+
+.field textarea:hover {
+    border-color: #aebbd0;
+}
+
+.field textarea:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 87, 173, 0.18);
+}
+
+.char-count {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    text-align: right;
+    color: #667;
+}
+
+/* Status picker: three tiles, each in its own colour */
+.icon-options.status-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.status-options .tile {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 8px;
+    text-align: center;
+}
+
+.status-options .status-working .badge { color: #1a9d46; background: #e3f6ea; }
+.status-options .status-broken  .badge { color: #d3231a; background: #fde8e7; }
+.status-options .status-missing .badge { color: #6f6f6f; background: #ececec; }
+
+.status-options .status-working input:checked + .tile { border-color: #1fc152; box-shadow: 0 0 0 4px rgba(31, 193, 82, 0.2); }
+.status-options .status-broken  input:checked + .tile { border-color: #ee2a20; box-shadow: 0 0 0 4px rgba(238, 42, 32, 0.18); }
+.status-options .status-missing input:checked + .tile { border-color: #8a8a8a; box-shadow: 0 0 0 4px rgba(138, 138, 138, 0.22); }
+
+.status-options .status-working input:checked + .tile .badge { color: #fff; background: #1fc152; }
+.status-options .status-broken  input:checked + .tile .badge { color: #fff; background: #ee2a20; }
+.status-options .status-missing input:checked + .tile .badge { color: #fff; background: #8a8a8a; }
+
+.status-options .status-working:hover .tile { border-color: #1fc152; }
+.status-options .status-broken:hover .tile  { border-color: #ee2a20; }
+.status-options .status-missing:hover .tile { border-color: #8a8a8a; }
+
+@media (max-width: 800px) {
+    .room-actions {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .icon-options.status-options {
+        grid-template-columns: 1fr;
+    }
+
+    .status-options .tile {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 12px 16px;
+    }
+}
+
+/* ============================================
+   Staff accounts (manage_staff.php / staff_form.php)
+   ============================================ */
+.staff-table {
+    min-width: 760px;
+}
+
+.staff-table td.staff-email {
+    overflow-wrap: anywhere;
+}
+
+.pw-mask {
+    letter-spacing: 0.15em;
+    color: #666;
+    cursor: help;
+}
+
+.field > label.show-password {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+/* ============================================
+   Equipment photos
+   ============================================ */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Small photo in the table */
+.thumb {
+    display: inline-grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    color: #9aa4b5;
+    background: #f1f5fb;
+    border: 1px solid #d5dce8;
+    border-radius: 8px;
+}
+
+a.thumb {
+    transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+a.thumb:hover,
+a.thumb:focus-visible {
+    transform: scale(1.06);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumb-empty .icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.6;
+}
+
+/* Photo picker in the equipment form */
+.upload-preview {
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f7f9fc;
+    border: 2px solid #d5dce8;
+    border-radius: 10px;
+}
+
+.upload-preview img {
+    display: block;
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: 6px;
+    transition: opacity 140ms ease;
+}
+
+/* "Remove current photo" is ticked */
+.upload-preview.removing {
+    border-color: #ee2a20;
+}
+
+.upload-preview.removing img {
+    opacity: 0.3;
+}
+
+.upload-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 16px;
+    color: var(--blue);
+    font-weight: 600;
+    text-align: center;
+    overflow-wrap: anywhere;
+    background: #f7f9fc;
+    border: 2px dashed #b9c8de;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 140ms ease, background 140ms ease;
+}
+
+.upload-drop:hover,
+.visually-hidden:focus-visible + .upload-drop {
+    background: #eaf2fb;
+    border-color: var(--blue);
+}
+
+.visually-hidden:focus-visible + .upload-drop {
+    outline: 3px solid var(--yellow);
+    outline-offset: 2px;
+}
+
+.upload-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.upload-actions:empty {
+    display: none;
+}
+
+.field > label.remove-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #c81f17;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.upload-error {
+    margin-top: 10px;
+    color: #842029;
+    font-size: 0.95rem;
+}
+
+/* ============================================================
+   Confirm dialog
+   ============================================================ */
+
+.confirm-dialog {
+    width: min(92vw, 400px);
+    margin: auto;
+    padding: 28px 28px 24px;
+    color: #202a35;
+    font-family: 'Jost', sans-serif;
+    text-align: center;
+    background: #fff;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.confirm-dialog::backdrop {
+    background: rgba(0, 30, 70, 0.55);
+}
+
+.confirm-dialog h2 {
+    margin: 0 0 8px;
+    padding: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.confirm-dialog p {
+    margin: 0 0 24px;
+    color: #444;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.confirm-actions .confirm-cancel,
+.confirm-actions .confirm-ok {
+    min-width: 110px;
+    padding: 10px 18px;
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.confirm-actions .confirm-cancel {
+    color: #202a35;
+    background: #e0e0e0;
+    border: 1px solid #999;
+}
+
+.confirm-actions .confirm-cancel:hover {
+    background: #d0d0d0;
+}
+
+.confirm-actions .confirm-ok {
+    color: #fff;
+    background: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.confirm-actions .confirm-ok:hover {
+    background: #bb2d3b;
+    border-color: #bb2d3b;
+}

@@ -1,0 +1,1 @@
+(()=>{(function(){const t=document.getElementById("staffForm"),e=document.getElementById("password");document.getElementById("showPassword").addEventListener("change",function(){e.type=this.checked?"text":"password"}),t.addEventListener("submit",function(n){t.checkValidity()||(n.preventDefault(),t.reportValidity())})})();})();

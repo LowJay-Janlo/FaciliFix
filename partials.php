@@ -15,6 +15,8 @@ $icons = [
     'check-circle' => '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
     'x-circle'     => '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
     'help-circle'  => '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+    'image'        => '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+    'upload'       => '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
 ];
 
 $floor_tags = ['1st Floor', '2nd Floor', '3rd Floor', '4th Floor'];
@@ -32,14 +34,19 @@ $admin_nav = [
     'staff'      => ['manage_staff.php',     'Manage Staff'],
 ];
 
+$staff_nav = [
+    'rooms' => ['staff_dashboard.php', 'Rooms'],
+];
+
 function icon($paths) {
     return '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">' . $paths . '</svg>';
 }
 
-function render_topbar($active = null, $logged_in = true) {
-    global $icons, $admin_nav;
+function render_topbar($active = null, $logged_in = true, $role = 'Admin') {
+    global $icons, $admin_nav, $staff_nav;
 
-    $home = $logged_in ? 'admin_dashboard.php' : 'landingpage.php';
+    $nav  = ($role === 'Staff') ? $staff_nav : $admin_nav;
+    $home = !$logged_in ? 'landingpage.php' : (($role === 'Staff') ? 'staff_dashboard.php' : 'admin_dashboard.php');
 
     echo '<header class="topbar">';
     echo '<a href="' . $home . '" class="topbar-logo" aria-label="FaciliFix home">';
@@ -48,7 +55,7 @@ function render_topbar($active = null, $logged_in = true) {
 
     if ($logged_in) {
         echo '<nav class="topbar-nav" id="topbarNav" aria-label="Main navigation">';
-        foreach ($admin_nav as $key => $link) {
+        foreach ($nav as $key => $link) {
             $is_active = ($key === $active);
             echo '<a href="' . $link[0] . '"'
                . ($is_active ? ' class="active" aria-current="page"' : '') . '>'

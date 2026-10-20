@@ -1,12 +1,8 @@
 <?php
-session_start();
-include 'db.php';
+require 'auth.php';
+require_role('Admin');
 include 'partials.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
-    exit();
-}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && csrf_valid()) {
     $user_id = (int)($_POST['id'] ?? 0);

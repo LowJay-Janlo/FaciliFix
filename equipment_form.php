@@ -1,12 +1,9 @@
 <?php
-session_start();
-include 'db.php';
+require 'auth.php';
+require_role('Admin');
 include 'partials.php';
+include 'media.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
-    exit();
-}
 
 $room_id = (int)($_GET['room_id'] ?? 0);
 $edit_id = (int)($_GET['id'] ?? 0);
@@ -34,9 +31,11 @@ $name        = '';
 $status      = '';
 $description = '';
 $old_status  = '';
+$old_image   = '';
+$remove_image = false;
 
 if ($is_edit) {
-    $stmt = $conn->prepare("SELECT equipment_name, status, description FROM equipment WHERE id = ? AND room_id = ?");
+    $stmt = $conn->prepare("SELECT equipment_name, status, description, image FROM equipment WHERE id = ? AND room_id = ?");
     $stmt->bind_param("ii", $edit_id, $room_id);
     $stmt->execute();
     $existing = $stmt->get_result()->fetch_assoc();
@@ -47,6 +46,7 @@ if ($is_edit) {
         exit();
     }
     $old_status = $existing['status'];
+    $old_image  = (string)$existing['image'];
 
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
         $name        = $existing['equipment_name'];
@@ -59,8 +59,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name        = trim($_POST['equipment_name'] ?? '');
     $status      = $_POST['status'] ?? '';
     $description = trim($_POST['description'] ?? '');
+    $remove_image = $is_edit && !empty($_POST['remove_image']);
 
-    if (!csrf_valid()) {
+    if (!$_POST && !$_FILES && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+        // The upload was bigger than the server allows, so PHP dropped the whole form
+        $error = "That upload is too large. Choose an image under 3 MB.";
+    } elseif (!csrf_valid()) {
         $error = "Your session expired. Please try again.";
     } elseif ($name === '') {
         $error = "Equipment name cannot be empty.";
@@ -71,15 +75,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (mb_strlen($description) > 1000) {
         $error = "Description must be 1000 characters or less.";
     } else {
+        [$new_image, $image_error] = save_image($_FILES['image'] ?? null);
+        if ($image_error !== null) {
+            $error = $image_error;
+        }
+    }
+
+    if ($error === '') {
         $desc_value = ($description === '') ? null : $description;
 
+        // Keep the old photo unless it is replaced or removed
+        $image_value = $old_image !== '' ? $old_image : null;
+        if ($new_image !== null) {
+            $image_value = $new_image;
+        } elseif ($remove_image) {
+            $image_value = null;
+        }
+
         if ($is_edit) {
-            $stmt = $conn->prepare("UPDATE equipment SET equipment_name = ?, status = ?, description = ? WHERE id = ? AND room_id = ?");
-            $stmt->bind_param("sssii", $name, $status, $desc_value, $edit_id, $room_id);
+            $stmt = $conn->prepare("UPDATE equipment SET equipment_name = ?, status = ?, description = ?, image = ? WHERE id = ? AND room_id = ?");
+            $stmt->bind_param("ssssii", $name, $status, $desc_value, $image_value, $edit_id, $room_id);
             $ok = $stmt->execute();
             $stmt->close();
 
             if ($ok) {
+                if ($old_image !== '' && $old_image !== $image_value) {
+                    delete_image($old_image);
+                }
                 if ($status !== $old_status) {
                     $user_id = (int)$_SESSION['user_id'];
                     $log = $conn->prepare("INSERT INTO reports (equipment_id, user_id, status_reported, remarks) VALUES (?, ?, ?, ?)");
@@ -90,16 +112,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: room.php?id=" . $room_id . "&saved=1");
                 exit();
             }
+            if ($new_image !== null) {
+                delete_image($new_image);
+            }
             error_log("FaciliFix: " . $conn->error);
             $error = "Could not save the changes. Please try again.";
         } else {
-            $stmt = $conn->prepare("INSERT INTO equipment (room_id, equipment_name, status, description) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("isss", $room_id, $name, $status, $desc_value);
+            $stmt = $conn->prepare("INSERT INTO equipment (room_id, equipment_name, status, description, image) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("issss", $room_id, $name, $status, $desc_value, $image_value);
 
             if ($stmt->execute()) {
                 $stmt->close();
                 header("Location: room.php?id=" . $room_id . "&added=1");
                 exit();
+            }
+            if ($new_image !== null) {
+                delete_image($new_image);
             }
             error_log("FaciliFix: " . $conn->error);
             $error = "Could not add the equipment. Please try again.";
@@ -117,10 +145,8 @@ $back_url = "room.php?id=" . $room_id;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $is_edit ? 'Update Report' : 'New Equipment'; ?> - FaciliFix</title>
-    <link href="base.css" rel="stylesheet">
-    <link href="add_room.css" rel="stylesheet">
-    <link href="room.css" rel="stylesheet">
-    <link href="modal.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
 </head>
 <body>
 
@@ -141,7 +167,7 @@ $back_url = "room.php?id=" . $room_id;
 
             <div class="addroom-layout single">
 
-                <form method="POST" action="" class="room-form" id="equipmentForm" novalidate>
+                <form method="POST" action="" class="room-form" id="equipmentForm" enctype="multipart/form-data" novalidate>
                     <?php echo csrf_field(); ?>
 
                     <?php if ($error !== ''): ?>
@@ -174,6 +200,35 @@ $back_url = "room.php?id=" . $room_id;
                     </fieldset>
 
                     <div class="field">
+                        <label for="image">Photo</label>
+                        <span class="hint">Optional. JPG, PNG or WebP, up to 3 MB.</span>
+
+                        <div class="upload" id="upload">
+                            <div class="upload-preview" id="uploadPreview" <?php echo $old_image === '' ? 'hidden' : ''; ?>>
+                                <img <?php echo $old_image !== '' ? 'src="' . htmlspecialchars(image_url($old_image)) . '"' : ''; ?>
+                                     alt="Photo of the equipment" id="uploadImage" data-original="<?php echo htmlspecialchars(image_url($old_image)); ?>">
+                            </div>
+
+                            <input type="file" id="image" name="image" class="visually-hidden" accept="image/jpeg,image/png,image/webp">
+                            <label for="image" class="upload-drop">
+                                <?php echo icon($icons['upload']); ?>
+                                <span id="uploadLabel" data-default="<?php echo $old_image === '' ? 'Choose a photo' : 'Replace photo'; ?>"><?php echo $old_image === '' ? 'Choose a photo' : 'Replace photo'; ?></span>
+                            </label>
+
+                            <div class="upload-actions">
+                                <button type="button" class="btn btn-gray" id="uploadClear" hidden>Cancel new photo</button>
+                                <?php if ($old_image !== ''): ?>
+                                    <label class="remove-image" id="removeLabel">
+                                        <input type="checkbox" name="remove_image" id="removeImage" value="1" <?php echo $remove_image ? 'checked' : ''; ?>>
+                                        Remove current photo
+                                    </label>
+                                <?php endif; ?>
+                            </div>
+                            <p class="upload-error" id="uploadError" role="alert" hidden></p>
+                        </div>
+                    </div>
+
+                    <div class="field">
                         <label for="description">Description / Comments</label>
                         <span class="hint">Optional. Serial number, what is wrong, where it was last seen...</span>
                         <textarea id="description" name="description" maxlength="1000"
@@ -191,25 +246,8 @@ $back_url = "room.php?id=" . $room_id;
 
         </main>
 
-    <script src="layout.js"></script>
-    <script>
-    (function () {
-        const form = document.getElementById('equipmentForm');
-        const desc = document.getElementById('description');
-        const count = document.getElementById('charCount');
-
-        function updateCount() { count.textContent = desc.value.length; }
-        desc.addEventListener('input', updateCount);
-        updateCount();
-
-        form.addEventListener('submit', function (e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
-                form.reportValidity();
-            }
-        });
-    })();
-    </script>
+    <script src="js/layout.js"></script>
+    <script src="js/equipment_form.js"></script>
 
 </body>
 </html>

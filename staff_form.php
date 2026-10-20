@@ -1,12 +1,8 @@
 <?php
-session_start();
-include 'db.php';
+require 'auth.php';
+require_role('Admin');
 include 'partials.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
-    exit();
-}
 
 $edit_id = (int)($_GET['id'] ?? 0);
 $is_edit = $edit_id > 0;
@@ -103,10 +99,8 @@ $back_url = "manage_staff.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $is_edit ? 'Edit User' : 'Add New User'; ?> - FaciliFix</title>
-    <link href="base.css" rel="stylesheet">
-    <link href="add_room.css" rel="stylesheet">
-    <link href="room.css" rel="stylesheet">
-    <link href="modal.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
 </head>
 <body>
 
@@ -171,24 +165,8 @@ $back_url = "manage_staff.php";
 
     </main>
 
-    <script src="layout.js"></script>
-    <script>
-    (function () {
-        const form = document.getElementById('staffForm');
-        const pw = document.getElementById('password');
-
-        document.getElementById('showPassword').addEventListener('change', function () {
-            pw.type = this.checked ? 'text' : 'password';
-        });
-
-        form.addEventListener('submit', function (e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
-                form.reportValidity();
-            }
-        });
-    })();
-    </script>
+    <script src="js/layout.js"></script>
+    <script src="js/staff_form.js"></script>
 
 </body>
 </html>

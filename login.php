@@ -1,14 +1,16 @@
 <?php
-session_start();
-include 'db.php';
+require 'auth.php';
 include 'partials.php';
+ff_headers();
 
-if (isset($_SESSION['user_id'])) {
-    header("Location: " . (($_SESSION['role'] ?? '') === 'Admin' ? 'admin_dashboard.php' : 'staff_dashboard.php'));
+// Already signed in on this browser? Go straight to that dashboard.
+$signed_in = ff_signed_in_role();
+if ($signed_in !== null) {
+    header("Location: " . ff_home($signed_in));
     exit();
 }
 
-$error = '';
+$error = isset($_GET['expired']) ? 'You were signed out because of inactivity. Please log in again.' : '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email    = trim($_POST['email'] ?? '');
@@ -17,11 +19,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $stmt->store_result();
+    $user = $stmt->get_result()->fetch_assoc();
 
-    if ($stmt->num_rows == 1) {
-        $stmt->bind_result($id, $name, $stored_password, $role);
-        $stmt->fetch();
+    if ($user && isset(SESSION_NAMES[$user['role']])) {
+        $id = (int)$user['id'];
+        $name = $user['name'];
+        $stored_password = $user['password'];
+        $role = $user['role'];
 
         $valid = false;
         $needs_upgrade = false;
@@ -43,16 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $up->close();
             }
 
-            session_regenerate_id(true);
-            $_SESSION['user_id']   = $id;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['role']      = $role;
-
-            if ($role == 'Admin') {
-                header("Location: admin_dashboard.php");
-            } else {
-                header("Location: staff_dashboard.php");
-            }
+            ff_login($id, $name, $role);
+            header("Location: " . ff_home($role));
             exit();
         } else {
             $error = "Invalid email or password.";
@@ -71,8 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FaciliFix - Login</title>
 
-    <link href="base.css" rel="stylesheet">
-    <link href="login.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/public.css" rel="stylesheet">
 </head>
 <body>
     <?php render_topbar(null, false); ?>

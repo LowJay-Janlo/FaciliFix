@@ -1,12 +1,8 @@
 <?php
-session_start();
-include 'db.php';
+require 'auth.php';
+require_role('Admin');
 include 'partials.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
-    exit();
-}
 
 $edit_id = (int)($_GET['id'] ?? 0);
 $is_edit = $edit_id > 0;
@@ -37,7 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $room_tag  = $_POST['room_tag'] ?? '';
     $room_icon = $_POST['room_icon'] ?? '';
 
-    if ($room_name === '') {
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } elseif ($room_name === '') {
         $error = "Room name cannot be empty.";
     } elseif (mb_strlen($room_name) > 100) {
         $error = "Room name must be 100 characters or less.";
@@ -91,35 +89,30 @@ $back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $is_edit ? 'Edit Room' : 'Add Room'; ?> - FaciliFix</title>
-    <link href="facilities.css" rel="stylesheet">
-    <link href="add_room.css" rel="stylesheet">
-    <link href="modal.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
 </head>
 <body>
 
-    <?php render_sidebar('facilities'); ?>
+    <?php render_topbar('facilities'); ?>
 
-    <div class="content">
-
-        <?php render_topbar(); ?>
-
-        <main class="addroom-main">
-
-            <a href="<?php echo $back_url; ?>" class="go-back">
-                <?php echo icon($icons['arrow-left']); ?> Go Back
-            </a>
+        <main class="page page-narrow">
 
             <div class="addroom-header">
-                <span class="eyebrow">Facilities</span>
-                <h1><?php echo $is_edit ? 'Edit Room' : 'Add New Room'; ?></h1>
-                <p><?php echo $is_edit
-                    ? 'Change the room name, floor or icon. Its equipment stays exactly as it is.'
-                    : 'Give the room a name, put it on a floor and pick an icon. It will show up on the Facilities page right away.'; ?></p>
+                <?php render_back($back_url, 'Go back'); ?>
+                <div>
+                    <span class="eyebrow">Facilities</span>
+                    <h1><?php echo $is_edit ? 'Edit Room' : 'Add New Room'; ?></h1>
+                    <p><?php echo $is_edit
+                        ? 'Change the room name, floor or icon. Its equipment stays exactly as it is.'
+                        : 'Give the room a name, put it on a floor and pick an icon. It will show up on the Facilities page right away.'; ?></p>
+                </div>
             </div>
 
             <div class="addroom-layout">
 
                 <form method="POST" action="" class="room-form" id="roomForm" novalidate>
+                    <?php echo csrf_field(); ?>
 
                     <?php if ($error !== ''): ?>
                         <div class="notice notice-error" role="alert"><?php echo htmlspecialchars($error); ?></div>
@@ -185,46 +178,9 @@ $back_url = $is_edit ? "room.php?id=" . $edit_id : "facilities.php";
             </div>
 
         </main>
-    </div>
 
-    <script src="layout.js"></script>
-    <script>
-    (function () {
-        const form = document.getElementById('roomForm');
-        const nameInput = document.getElementById('room_name');
-        const tagSelect = document.getElementById('room_tag');
-        const radios = form.querySelectorAll('input[name="room_icon"]');
-        const pvName = document.getElementById('previewName');
-        const pvTag = document.getElementById('previewTag');
-        const pvIcon = document.getElementById('previewIcon');
-
-        function updatePreview() {
-            pvName.textContent = nameInput.value.trim() || 'Room name';
-            pvTag.textContent = tagSelect.value || 'Select a floor';
-
-            const checked = form.querySelector('input[name="room_icon"]:checked');
-            if (checked) {
-                pvIcon.innerHTML = checked.closest('.icon-option').querySelector('svg').outerHTML;
-                pvIcon.classList.add('filled');
-            } else {
-                pvIcon.innerHTML = '';
-                pvIcon.classList.remove('filled');
-            }
-        }
-
-        nameInput.addEventListener('input', updatePreview);
-        tagSelect.addEventListener('change', updatePreview);
-        radios.forEach(function (r) { r.addEventListener('change', updatePreview); });
-        updatePreview();
-
-        form.addEventListener('submit', function (e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
-                form.reportValidity();
-            }
-        });
-    })();
-    </script>
+    <script src="js/layout.js"></script>
+    <script src="js/add_room.js"></script>
 
 </body>
 </html>

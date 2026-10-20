@@ -1,0 +1,10 @@
+# Nobody can list folders
+Options -Indexes
+
+# Files that are only ever loaded by other PHP files, or that are not pages at all
+<FilesMatch "^(db|auth|partials|media)\.php$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "\.(sql|md|log|bak|ini)$|^config\.inc\.php$">
+    Require all denied
+</FilesMatch>

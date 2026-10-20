@@ -1,0 +1,2 @@
+uploads/equipment/*
+!uploads/equipment/.htaccess

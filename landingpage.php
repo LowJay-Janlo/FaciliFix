@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FaciliFix</title>
-    <link href="base.css" rel="stylesheet">
-    <link href="landingpage.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/public.css" rel="stylesheet">
 </head>
 <body>
 

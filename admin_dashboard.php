@@ -1,10 +1,7 @@
 <?php
-session_start();
+require 'auth.php';
+require_role('Admin');
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: login.php");
-    exit();
-}
 
 include 'partials.php';
 ?>
@@ -15,9 +12,8 @@ include 'partials.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FaciliFix - Admin Dashboard</title>
-    <link href="base.css" rel="stylesheet">
-    <link href="dashboard.css" rel="stylesheet">
-    <link href="modal.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
 </head>
 <body>
 
@@ -49,6 +45,6 @@ include 'partials.php';
         </section>
     </main>
 
-    <script src="layout.js"></script>
+    <script src="js/layout.js"></script>
 </body>
 </html>
